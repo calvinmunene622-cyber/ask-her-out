@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DriveHub - Car App</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f3f4f6;
+    color: #111827;
+}
+
+header {
+    background: #111827;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 28px;
+}
+
+header p {
+    margin-top: 5px;
+    color: #d1d5db;
+}
+
+.search {
+    padding: 20px;
+    text-align: center;
+}
+
+.search input {
+    width: min(90%, 500px);
+    padding: 15px;
+    border: 1px solid #d1d5db;
+    border-radius: 25px;
+    font-size: 16px;
+}
+
+.cars {
+    width: min(1100px, 92%);
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    padding-bottom: 40px;
+}
+
+.car {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+.car:hover {
+    transform: translateY(-8px);
+}
+
+.car-image {
+    height: 170px;
+    background: linear-gradient(135deg, #374151, #111827);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 80px;
+}
+
+.car-info {
+    padding: 20px;
+}
+
+.car-info h2 {
+    font-size: 22px;
+}
+
+.car-info p {
+    color: #6b7280;
+    margin: 10px 0;
+}
+
+.price {
+    font-size: 22px;
+    font-weight: bold;
+    color: #2563eb;
+}
+
+button {
+    width: 100%;
+    margin-top: 15px;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1d4ed8;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-content {
+    background: white;
+    width: min(450px, 100%);
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+}
+
+.close {
+    background: #ef4444;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🚗 DriveHub</h1>
+    <p>Find your next car</p>
+</header>
+
+<div class="search">
+    <input
+        type="text"
+        id="search"
+        placeholder="Search for a car..."
+        onkeyup="searchCars()"
+    >
+</div>
+
+<div class="cars" id="carList"></div>
+
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <h2 id="modalName"></h2>
+        <p id="modalDetails"></p>
+        <button class="close" onclick="closeModal()">Close</button>
+    </div>
+</div>
+
+<script>
+
+const cars = [
+    {
+        name: "Toyota Supra",
+        type: "Sports Car",
+        price: "$55,000",
+        details: "3.0L Turbo Engine • Automatic • Rear-Wheel Drive"
+    },
+    {
+        name: "BMW M4",
+        type: "Performance Coupe",
+        price: "$78,000",
+        details: "3.0L Twin Turbo • 503 HP • Sport Mode"
+    },
+    {
+        name: "Mercedes AMG GT",
+        type: "Luxury Sports Car",
+        price: "$95,000",
+        details: "4.0L V8 • Premium Interior • High Performance"
+    },
+    {
+        name: "Ford Mustang",
+        type: "Muscle Car",
+        price: "$42,000",
+        details: "5.0L V8 • 450 HP • Rear-Wheel Drive"
+    },
+    {
+        name: "Tesla Model S",
+        type: "Electric Car",
+        price: "$75,000",
+        details: "Electric • Long Range • Advanced Technology"
+    },
+    {
+        name: "Lamborghini Huracán",
+        type: "Supercar",
+        price: "$250,000",
+        details: "5.2L V10 • 600+ HP • All-Wheel Drive"
+    }
+];
+
+function displayCars(carArray) {
+
+    const carList = document.getElementById("carList");
+
+    carList.innerHTML = "";
+
+    carArray.forEach((car, index) => {
+
+        carList.innerHTML += `
+            <div class="car">
+                <div class="car-image">🚘</div>
+
+                <div class="car-info">
+                    <h2>${car.name}</h2>
+                    <p>${car.type}</p>
+
+                    <div class="price">${car.price}</div>
+
+                    <button onclick="showDetails(${index})">
+                        View Details
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+}
+
+function searchCars() {
+
+    const search =
+        document.getElementById("search")
+        .value
+        .toLowerCase();
+
+    const filteredCars =
+        cars.filter(car =>
+            car.name.toLowerCase().includes(search) ||
+            car.type.toLowerCase().includes(search)
+        );
+
+    displayCars(filteredCars);
+}
+
+function showDetails(index) {
+
+    const car = cars[index];
+
+    document.getElementById("modalName").innerText =
+        car.name;
+
+    document.getElementById("modalDetails").innerText =
+        car.details;
+
+    document.getElementById("modal").style.display =
+        "flex";
+}
+
+function closeModal() {
+
+    document.getElementById("modal").style.display =
+        "none";
+}
+
+displayCars(cars);
+
+</script>
+
+</body>
+</html>
